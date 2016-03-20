@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>returnType</title>
+	<script type="text/javascript">
+		function createXML() {
+			if(window.XMLHttpRequest){
+				return new XMLHttpRequest();
+			}else{
+				//IE6、7、8
+				return new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		}
+		function test1(){
+			//创建xhr实例
+			var xhr = createXML();
+			//打开链接
+			//ture为异步，false为同步
+			//异步的含义即，发送请求不等待服务器响应，继续往下执行
+			//同步的含义即，发送请求后等待服务器响应，然后往下执行
+			xhr.open("GET","returnXmlType.php",true);
+			
+			//如何获取返回信息
+			//通过监听状态的变化来获取返回响应，同时节省时间
+			xhr.onreadystatechange = function(){
+				if(this.readyState == 4 && this.status == 200){
+					// alert("请求完成了");
+					//alert(this.responseXML);
+					var xmldom = this.responseXML;
+					var chs= xmldom.getElementsByTagName("book")[0];
+					// alert(chs.firstChild.firstChild.wholeText);
+					// alert(chs.lastChild.firstChild.wholeText);
+					document.getElementById("btitle").value = chs.firstChild.firstChild.wholeText;
+					document.getElementById("bintro").value = chs.firstChild.lastChild.wholeText;
+
+
+				}
+			}
+			//发送器请求
+			xhr.send(null);
+			// alert("hello");
+		}
+		function test2() {
+			
+		}
+	</script>
+</head>
+<body>
+	<input type="text" id="btitle"><br/>
+	<input type="text" id="bintro"><br/>
+	<input type="button" onclick="test1()" value="测试返回值"></input>
+	<input type="button" onclick="test2()" value="测试返回值"></input>
+	<div id="progress"></div>
+</body>
+</html>

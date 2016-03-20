@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	
+</head>
+<body>
+	<input type="text" name="keyword"></input>
+	<input  type="button" value="搜索" onclick="sear()"></input>
+	<div id="szone">asdf</div>
+</body>
+<script type="text/javascript">
+		function sear() {
+			var kw = document.getElementsByName("keyword")[0].value;
+			var url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q='+kw+'&callback=aa';
+			var scr = document.createElement("script");
+			alert("adf");
+			scr.setAttribute("type", "text/javascript");
+			scr.setAttribute("src",url);
+			document.getElementsByTagName("head")[0].appendChild(scr);
+		}
+		function aa(res){
+			// alert(res);
+			console.log(res);
+			var szone = document.getElementById("szone");
+			var results = res.responseData.results;
+			var str = "";
+			for(var i in results){
+				str+='<p>'+results[i].title+'<br/>'+'</p>';
+				str+='<p>'+results[i].content+'<br />'+'</p>';
+				str+='<p>'+results[i].url+'<br />'+'</p>';
+			}
+			szone.innerHTML = str;
+		}
+	</script>
+</html>

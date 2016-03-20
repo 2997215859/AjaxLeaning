@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>returnJsonType</title>
+</head>
+<body>
+	<script type="text/javascript">
+		function createXHR() {
+			if(window.XMLHttpRequest){
+				return new XMLHttpRequest();
+			}else{
+				return new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		}
+		// function createXML() {
+		// 	if(window.XMLHttpRequest){
+		// 		return new XMLHttpRequest();
+		// 	}else{
+		// 		//IE6、7、8
+		// 		return new ActiveXObject("Microsoft.XMLHTTP");
+		// 	}
+		// }
+		function test() {
+			var xhr = createXHR();
+			xhr.open("GET","./returnJsonType.php",true);
+			xhr.onreadystatechange = function(){
+				if(this.readyState==4 && this.status==200){
+					// alert(this.responseText);
+					var book = eval("("+this.responseText+")");
+					// alert(book);
+					document.getElementById("btitle").value = book.title;
+					document.getElementById("bintro").value = book.intro;
+					// alert(book.title);
+					// alert(book.intro);	
+				}
+			}
+			xhr.send(null);
+		}
+	</script>
+	<input type="text" name="btitle" id="btitle"></input><br>
+	<input type="text" name="bintro" id="bintro"></input><br>
+	<input type="button" name="submit" value="测试返回为json" onclick="test()"></input>
+	<!-- <input type="button"></input> -->
+</body>
+</html>

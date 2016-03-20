@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript">
+		//console.log(new XMLHttpRequest());//控制台打印XMLHttpRequest对象
+		//console.log(new ActiveXObject());//控制台打印改对象，其只应用于IE6\7\8的浏览器中
+		//新建函数，返回创建的XML对象，以提高兼容性】
+		function createXML() {
+			if(window.XMLHttpRequest){
+				return new XMLHttpRequest();
+			}else{
+				//IE6、7、8
+				return new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		}
+		function vote(){
+			//创建xhr实例
+			var xhr = new createXML();
+			//打开链接
+			//ture为异步，false为同步
+			//异步的含义即，发送请求不等待服务器响应，继续往下执行
+			//同步的含义即，发送请求后等待服务器响应，然后往下执行
+			xhr.open("GET","./vote.php",true);
+			//发送器请求
+			xhr.send(null);
+			//如何获取返回信息
+			//通过监听状态的变化来获取返回响应，同时节省时间
+			xhr.onreadystatechange = function(){
+				if(this.readyState == 4 && this.status == 200){
+					// alert("请求完成了");
+					var str ="";
+					str = "状态码："+this.status+"<br/>";
+					str+="状态文字"+this.statusText+'<br/>';
+					str+="返回类型是:"+this.getResponseHeader("Content-Type")+'<br/>';
+					str+="返回的主体长度是:"+this.getResponseHeader("Content-Length")+'<br/>';
+					str+="返回的主体内容是"+this.responseText+"<br/>";
+					str+="所有头信息"+this.getAllResponseHeaders();
+					document.getElementById("progress").innerHTML = str;
+
+				}
+			}
+			// alert("hello");
+		}
+	</script>
+</head>
+<body>
+<div>
+	<p><img style="width: 50%;height: 50%" src="surf.jpg"></p>
+	<p><input type="submit" value="投票方法2" onclick="vote()"></input></p>
+</div>
+<div id="progress"></div>
+</body>
+</html>
