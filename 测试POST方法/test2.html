@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>test2</title>
+	<script type="text/javascript">
+		function createXHR() {
+			//制造xhr
+			if(window.XMLHttpRequest){
+				return new XMLHttpRequest();
+			}else{
+				return new ActiveXObject();
+			}
+		}
+		
+		function ajaxReg() {
+			/*1、收集表单的数据
+			2、打开连接
+			3、发送数据
+			4、监听回调*/
+			//0、制造xhr
+			var xhr = new createXHR();
+			//1、打开异步连接
+			xhr.open("post","./07-ajaxreg.php",true);
+			xhr.onreadystatechange = function(){
+				//绑定状态变化，建议在open之后就绑定
+				if(this.readyState==4 && this.status==200){
+					alert(this.responseText);
+				}
+			}
+			//2、手机表单数据
+			var username = document.getElementsByName("username")[0].value;
+			var email = document.getElementsByName("email")[0].value;
+			//3、发送数据
+			//alert("username="+username+"&email="+email);
+			//在发送数据之前还需要设置content-type
+			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
+			xhr.send("username="+username+"&email="+"email");
+
+			return true;
+		}
+	</script>
+</head>
+<body>
+	<div id="regres"></div>
+	<form action="07-ajaxreg.php" method="post" target="regzon" onsubmit="return ajaxReg()">
+		<p>用户名<input type="text" name="username"></p>
+		<p>邮件地址<input type="text" name="email"></p>
+		<p><input type="submit" name="submit"></input></p>
+	</form>
+	<iframe name="regzon"></iframe>
+</body>
+</html>
