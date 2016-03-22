@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.2/jquery.min.js"></script>	
+	<script type="text/javascript">
+		/*
+		分析：
+		1、捕捉表单提交的动作
+		2、创建iframe
+		3、把表单的target修改指向该iframe
+		4、去掉该iframe
+		 */
+		function ajaxUp() {
+			var ifname = Math.random();
+			$('<iframe name="'+ifname+'" width="0" height="0" frameBorder="0"></iframe>').appendTo($("body"));
+			$('form:first').attr('target',ifname);
+			$('#progress').html('<img src="jindutiao.jpg"/>');
+			// return false;
+		}
+	</script>
+	<style type="text/css">
+	p{
+		border:1px solid gray;
+	}
+	</style>
+</head>
+<body>
+	<h1>iframe模拟ajax文件上传效果</h1>
+	<div id="progress"></div>
+	<form method="post" action="iframe_file.php" enctype="multipart/form-data" onsubmit="return ajaxUp()">
+		<p><input type="file" name="pic"></input></p>
+		<p><input type="submit" name="提交"></input></p>
+	</form>
+</body>
+</html>

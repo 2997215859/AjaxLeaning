@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>formData</title>
+	<script type="text/javascript">
+		/*formData
+		打包表单数据
+		*/
+	function mySend(argument) {
+		// body...
+		/*表单数据*/
+		var fm = document.getElementById("myForm");
+		var fd = new FormData(fm);
+		/*直接添加数据*/
+		var fd2 = new FormData();
+		fd2.append('username2',"ruiy");
+		//xhr对象建立、链接、发送
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST","formData.php",true);
+		xhr.onreadystatechange = function() {
+			if(this.readyState==4 && this.status==200){
+				document.getElementById("debug").innerHTML = this.responseText;
+			}
+		}
+
+		//xhr.send(fd);//发送表单数据
+		xhr.send(fd2);//发送直接添加的数据
+
+	}
+		
+	</script>
+</head>
+<body>
+	<form id="myForm">
+		用户名<input type="text" name="username"/><br/>
+		密码<input type="text" name="password"/><br/>
+		邮箱<input type="text" name="email"/><br/>
+		性别<input type="text" name="gender"/><br/>
+		<input type="button" name="send" value="发送" onclick="mySend()"></input>
+	</form>
+	<div id="debug"></div>
+</body>
+</html>

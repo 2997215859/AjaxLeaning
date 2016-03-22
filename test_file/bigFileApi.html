@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>bigFile</title>
+	<script type="text/javascript">
+		/*
+		* 用到的API
+		* file->继承自->Blob
+		* Blob有slice方法，可以截取二进制对象的一部分
+		*
+		* 截取10M，然后上传
+		* 判断文件有没有截取完毕
+		* while(判断){
+		*  截取;
+		*  ajax上传;
+		* }
+		 */
+		var clock = null;
+		function fire(){
+			clock = window.setInterval(sendFile, 1000);
+		}
+		var sendFile = (function(){
+			var fd = null;
+			var xhr = new XMLHttpRequest();
+ 			var percent = 0;
+ 			const LENGTH = 2*1024*1024;//设定片的大小为10M
+			var start = 0;//声明和初始化开始
+			var end = start+LENGTH;//声明和初始化结尾
+			// var oFile = document.getElementsByName("upFile")[0].files[0];//获取文件对象
+			var oFileChip = new Blob();//File对象继承自Blob对象，Blob对象中有一方法为slice，可截取文件对象中的某一段
+			//var totalSize = oFile.size;//获取总长度，作为结束判断的条件
+			// console.log(oFile);
+			//以上都是初始化工作，为了达到实时刷新，使用定时器每隔1s来执行sendFile的动作
+			//工作都是发生在页面加载之后，该匿名函数执行完成初始化工作，并将xml的操作放于内部函数中返回，赋于变量sendFire
+			//
+			//当选择文件之后，会由定时器触发调用该函数
+			var sending = false;//true表示文件正在上传，false表示文件不在上传状态
+			return (function(){
+				if(sending==true){
+					return;//如果定时器再次访问的时候发现上一次文件尚未上传完毕，则返回等待下一次定时器的访问
+				}
+				var oFile = document.getElementsByName("upFile")[0].files[0];//获取文件对象
+				if(start>oFile.size){
+					clearInterval(clock);
+					return;	
+				}
+				oFileChip = oFile.slice(start, end);
+				fd = new FormData();
+				//console.log(oFileChip);
+				fd.append('part',oFileChip);
+				xhr.open("post","./bigFileApi.php",false);
+				xhr.send(fd);
+				start = end;
+				end = start+LENGTH;
+				sending = false;//表明上传完毕
+				percent = parseInt(100*end/oFile.size);
+				if(percent>100){
+					percent = 100;
+				}
+				document.getElementById("bar").style.width = percent+"%";
+				document.getElementById("bar").innerHTML = percent+"%";
+			});
+		})();
+		// function sendFile() {
+			// while(start<totalSize){
+			// 	oFileChip = oFile.slice(start, end);//截取小片
+			// 	fd = new FormData();
+			// 	console.log(oFileChip);
+			// 	fd.append('part',oFileChip);//包装成FormData
+
+			// 	xhr = new XMLHttpRequest();
+			// 	xhr.open("post","./bigFileApi.php",false);
+			// 	//此处使用了同步的方式是为了避免传送文件片的时候造成的混乱
+			// 	//但是若是用了同步，则在send的过程中onprogress无法响应，因此不能使用onprogress方式来表现进度条
+			// 	xhr.upload.onprogress = function(ev){
+			// 		var percent = 100*(start+ev.onloaded)/totalsize;
+			// 		document.getElementById("bar").style.width = percent+'%';
+			// 		document.getElementById("bar").innerHTML = parseInt(percent)+'%';
+			// 	}
+			// 	xhr.send(fd);//发送小片包装后的FormData
+			// 	//用end显示进度条
+			// 	percent = 100*end/totalSize;
+			// 	alert(percent);
+			// 	document.getElementById("bar").style.width = percent+'%';
+			// 	document.getElementById("bar").innerHTML = parseInt(percent)+'%';
+			// 	start = end;//设定下一片的开始
+			// 	end = start+LENGTH;//设定下一片的末尾
+			// }
+		// }
+	</script>
+	<style type="text/css">
+		#progress{
+			border:1px solid green;
+			width: 500px;
+			height: 30px;
+		}
+		#bar{
+			background: green;
+			width: 0%;
+			height: 100%;
+		}
+	</style>
+</head>
+<body>
+	<h1>html5大文件切割上传</h1>
+	<div id='progress'>
+		<div id="bar"></div>	
+	</div>
+	<input type="file" name="upFile" onchange="fire()"></input>
+</body>
+</html>

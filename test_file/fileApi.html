@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>fileApi</title>
+	<script type="text/javascript">
+		function selectFile() {
+			var pic = document.getElementsByTagName("input")[0].files[0];//file为一个文件数组，files[0]为该pic文件
+			//console.log(pic);
+			var disp = document.getElementById("disp");
+			//创建FormData对象
+			var fd = new FormData();
+			//把文件内容追加到FormData对象中
+			fd.append('pic',pic);
+
+			//显示上传的图片
+			var tmpImg = document.createElement("img");
+			tmpImg.src = window.URL.createObjectURL(pic);//把二进制文件对象转为浏览器可以显示的资源src，然后用img加载
+			document.getElementsByTagName('body')[0].appendChild(tmpImg);//添加该img元素到浏览器中
+
+			//xhr创建、链接、发送
+			var xhr = new XMLHttpRequest();
+			xhr.open("post","fileApi.php",true);
+			xhr.onreadystatechange = function() {
+				if(this.readyState==4 && this.status==200){
+					//disp.innerHTML = xhr.responseText;//得到返回的文件信息
+				}
+			}
+
+			/*显示进度条
+			* HTML5中XHR对象有属性upload绑定了 上传过程 的监听事件
+			* ev.total代表总的上传大小，ev.loaded代表意已上传的大小
+			* ev.lengthComputable如果为true说明一次性上传，未分开
+			* 然后通过百分比来显示
+			**/
+			xhr.upload.onprogress = function(ev){
+				// alert("upload");
+				// console.log(percent);
+				if(ev.lengthComputable){
+					//判断是否为一次性上传
+					var percent = 100*ev.loaded/ev.total;
+					document.getElementById("bar").style.width = percent+'%';
+					document.getElementById("bar").innerHTML = parseInt(percent)+'%';
+				}
+				
+			}
+			xhr.send(fd);
+			/*var cont = "";
+			cont += '文件名称:'+pic.name+'<br>';
+			cont +="文件大小"+pic.size+'<br>';
+		    disp.innerHTML = cont;*/
+		}
+	</script>
+	<style type="text/css">
+	#disp{
+		width:500px;
+		height:30px;
+		border: 1px solid green;
+	}
+	#bar{
+		width:0%;
+		height: 100%;
+		background: green;
+	}
+	</style>
+</head>
+<body>
+	<input type="file" name="pic" onchange="selectFile()"></input>
+	<div id="disp">
+		<div id="bar"></div>
+	</div>
+</body>
+</html>
