@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>testGet</title>
+	<script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript">
+		/*
+		$.get() 的第一个参数是我们希望请求的 URL（"demo_test.asp"）。
+		第二个参数是回调函数。第一个回调参数存有被请求页面的内容，第二个回调参数存有请求的状态。
+		 */
+		$(function(){	
+			$("input").click(function(){
+				$.get("testGet.php",function(data,status){
+					alert("返回的数据为:"+data+"\n返回的状态为:"+status);
+				});
+			});
+		});
+		
+	</script>
+</head>
+<body>
+	<input type="button" value="提交"></input>
+</body>
+</html>
